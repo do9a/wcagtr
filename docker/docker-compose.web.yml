@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  release:
+    build:
+      context: ../release
+      dockerfile: ../docker/Dockerfile.release
+    container_name: wcagtr-release
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-https://wcagtr.app}
+      NEXT_PUBLIC_ADMIN_PANEL_URL: ${NEXT_PUBLIC_ADMIN_PANEL_URL:-https://admin.wcagtr.com}
+      NEXT_PUBLIC_CUSTOMER_PANEL_URL: ${NEXT_PUBLIC_CUSTOMER_PANEL_URL:-https://customer.wcagtr.com}
+      NEXT_PUBLIC_RELEASE_URL: ${NEXT_PUBLIC_RELEASE_URL:-https://wcagtr.com}
+    networks:
+      - web-network
+
+  web-gateway:
+    image: nginx:alpine
+    container_name: wcagtr-web-gateway
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/web-gateway.conf:/etc/nginx/nginx.conf:ro
+      - ../admin-panel/src:/var/www/admin:ro
+      - ../customer-panel/src:/var/www/customer:ro
+    depends_on:
+      - release
+    networks:
+      - web-network
+
+networks:
+  web-network:
+    driver: bridge

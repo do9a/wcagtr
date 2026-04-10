@@ -1,0 +1,269 @@
+/* ============================================
+   WCAG TR Admin Panel - Responsive Styles
+   Mobile-first breakpoints
+   ============================================ */
+
+/* Mobile (default, 320px+) - styles are in main.css */
+
+/* Tablet (768px+) */
+@media (max-width: 768px) {
+    /* App Layout - Stack navigation on mobile */
+    .app-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        padding: 0;
+        gap: 0;
+    }
+
+    .app-nav {
+        grid-row: 1;
+        grid-column: 1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: auto;
+        height: auto;
+        z-index: var(--z-fixed);
+        border-right: none;
+        border-bottom: var(--border-width) solid var(--color-border);
+        padding: var(--space-3);
+        border-radius: 0;
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-height: none;
+    }
+
+    .nav-toggle {
+        display: block;
+    }
+
+    /* Hide menu by default, show when toggled */
+    .nav-menu {
+        display: none;
+    }
+
+    .app-nav[data-expanded="true"] .nav-menu {
+        display: block;
+        margin-top: var(--space-4);
+    }
+
+    .nav-footer {
+        display: none;
+    }
+
+    .app-nav[data-expanded="true"] .nav-footer {
+        display: block;
+    }
+
+    .app-main {
+        grid-row: 2;
+        grid-column: 1;
+        padding: var(--space-4);
+        padding-top: calc(86px + var(--space-4)); /* Account for fixed nav */
+    }
+
+    /* Dashboard Grid - Single column on mobile */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Login Card - Full width on mobile */
+    .login-card {
+        padding: var(--space-5);
+    }
+
+    .login-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    /* Tables - Horizontal scroll */
+    .table-container {
+        border-radius: var(--border-radius);
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: var(--space-2) var(--space-3);
+    }
+
+    /* Modal - Full width on mobile */
+    .modal {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+    }
+
+    .modal-backdrop {
+        padding: 0;
+    }
+
+    /* Toast - Full width on mobile */
+    .toast-container {
+        left: var(--space-4);
+        right: var(--space-4);
+        max-width: none;
+    }
+
+    /* Stat Cards - Smaller text on mobile */
+    .stat-card-value {
+        font-size: var(--font-size-2xl);
+    }
+
+    /* Buttons - Full width on mobile forms */
+    .login-form .btn {
+        width: 100%;
+    }
+
+    /* Reduce spacing on mobile */
+    .app-main {
+        padding: var(--space-3);
+        padding-top: calc(86px + var(--space-3));
+    }
+
+    h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-xl);
+    }
+}
+
+@media (min-width: 769px) {
+    .nav-menu,
+    .nav-footer {
+        display: block !important;
+    }
+}
+
+/* Small mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    /* Further reduce spacing */
+    .login-container {
+        padding: var(--space-3);
+    }
+
+    .login-card {
+        padding: var(--space-4);
+    }
+
+    .stat-card {
+        padding: var(--space-4);
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: var(--space-4);
+    }
+
+    /* Stack table actions vertically */
+    .table-actions {
+        flex-direction: column;
+    }
+
+    /* Reduce font sizes */
+    :root {
+        font-size: 15px;
+    }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+    /* Wider navigation on large screens */
+    .app-layout {
+        grid-template-columns: minmax(300px, 320px) minmax(0, 1fr);
+    }
+
+    .app-main {
+        padding: var(--space-8);
+    }
+
+    /* Dashboard Grid - More columns on desktop */
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    /* Larger modals on desktop */
+    .modal {
+        max-width: 700px;
+    }
+}
+
+/* Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+    .view-container {
+        max-width: 1400px;
+    }
+
+    /* Even more columns on very large screens */
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Print Styles */
+@media print {
+    /* Hide navigation and non-essential elements */
+    .app-nav,
+    .nav-footer,
+    .skip-link,
+    .toast-container,
+    .modal-backdrop,
+    .btn {
+        display: none !important;
+    }
+
+    .app-layout {
+        display: block;
+    }
+
+    .app-main {
+        padding: 0;
+    }
+
+    /* Optimize tables for printing */
+    .table-container {
+        border: none;
+    }
+
+    .data-table {
+        font-size: 10pt;
+    }
+
+    /* Page breaks */
+    .stat-card,
+    .table-container {
+        page-break-inside: avoid;
+    }
+
+    /* Black and white */
+    * {
+        color: #000 !important;
+        background: #fff !important;
+    }
+}
+
+/* High Contrast Mode (WCAG forced-colors) */
+@media (forced-colors: active) {
+    /* Ensure visible focus indicators */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+        outline: 2px solid CanvasText;
+        outline-offset: 2px;
+    }
+
+    /* Ensure borders are visible */
+    .form-input,
+    .form-select,
+    .data-table,
+    .stat-card,
+    .modal {
+        border: 1px solid CanvasText;
+    }
+}

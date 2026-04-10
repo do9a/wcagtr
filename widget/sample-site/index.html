@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WCAGTR Örnek Website</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        line-height: 1.6;
+        background: #f6f7fb;
+        color: #172033;
+      }
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+      header,
+      main,
+      footer {
+        background: #fff;
+        border: 1px solid #d7dbe7;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      h1,
+      h2 {
+        margin-top: 0;
+      }
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      button {
+        min-width: 44px;
+        min-height: 44px;
+        border: 1px solid #1e4ed8;
+        border-radius: 8px;
+        background: #1e4ed8;
+        color: #fff;
+        font-size: 1rem;
+        padding: 0.625rem 0.875rem;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #fff;
+        color: #172033;
+        border-color: #b8bfd1;
+      }
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible {
+        outline: 3px solid #ffbf00;
+        outline-offset: 2px;
+      }
+      .status {
+        margin-top: 0.75rem;
+        border-radius: 8px;
+        padding: 0.75rem;
+        border: 1px solid #c6d3ff;
+        background: #edf2ff;
+      }
+      .status.error {
+        border-color: #f8c4c4;
+        background: #ffeaea;
+      }
+      .test-zone {
+        margin-top: 1rem;
+        border: 1px dashed #b8bfd1;
+        border-radius: 8px;
+        padding: 0.75rem;
+      }
+      .test-zone .low-contrast {
+        color: #bfc4d2;
+        background: #f5f6fa;
+        padding: 0.5rem;
+      }
+      .field {
+        margin-top: 0.75rem;
+      }
+      .field input {
+        width: 100%;
+        max-width: 320px;
+        min-height: 44px;
+        border-radius: 8px;
+        border: 1px solid #b8bfd1;
+        padding: 0 0.625rem;
+      }
+      @media (max-width: 640px) {
+        .container {
+          padding: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>WCAGTR Widget Test Sitesi</h1>
+        <p>
+          Bu sayfa, widget entegrasyonunu yerelde test etmek için hazırlanmış örnek bir sitedir.
+        </p>
+        <div class="actions">
+          <button id="load-widget-btn" type="button">Widget'i Yükle</button>
+          <button id="reset-widget-btn" class="secondary" type="button">Widget'i Sıfırla</button>
+        </div>
+        <p id="status" class="status" role="status" aria-live="polite">
+          Hazır. "Widget'i Yükle" butonuna basın.
+        </p>
+      </header>
+
+      <main id="main-content">
+        <h2>Test Alanı</h2>
+        <p>
+          Widget açıldıktan sonra sol alttaki <strong>♿ butonuyla</strong> metin/kontrast/link/hareket/font
+          ayarlarını test edebilirsiniz.
+        </p>
+
+        <section class="test-zone" aria-labelledby="test-zone-title">
+          <h2 id="test-zone-title">Bilerek Bırakılmış Test Noktaları</h2>
+          <p class="low-contrast">Bu metin düşük kontrast örneğidir.</p>
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='90'%3E%3Crect width='240' height='90' fill='%23e7ebff'/%3E%3Ctext x='15' y='50' font-size='18' fill='%23566'%3EÖrnek görsel%3C/text%3E%3C/svg%3E"
+            width="240"
+            height="90"
+          />
+          <div class="field">
+            <label for="demo-name">Ad Soyad</label>
+            <input id="demo-name" type="text" placeholder="Adınızı yazın" />
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          API: <a href="http://localhost:3000/health">http://localhost:3000/health</a>
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:3000/api/v1";
+      const WIDGET_SRC = "http://localhost:3000/cdn/widget-dev.js";
+      const STATUS = document.getElementById("status");
+      const STORAGE_KEY = "wcagtr-sample-widget-token";
+
+      function setStatus(message, isError = false) {
+        STATUS.textContent = message;
+        STATUS.classList.toggle("error", Boolean(isError));
+      }
+
+      async function requestJson(url, options) {
+        const response = await fetch(url, options);
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.error || data.message || `İstek başarısız: ${response.status}`);
+        }
+        return data;
+      }
+
+      async function loginWithPassword(password) {
+        return requestJson(`${API_BASE}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "test@example.com", password }),
+        });
+      }
+
+      async function ensureCustomerToken() {
+        const passwords = ["testpassword123", "password123"];
+        for (const password of passwords) {
+          try {
+            const login = await loginWithPassword(password);
+            if (login.token) return login.token;
+          } catch {
+            // sonraki şifreyi dene
+          }
+        }
+
+        await requestJson(`${API_BASE}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: "test@example.com",
+            password: "testpassword123",
+            companyName: "Widget Test Company",
+          }),
+        });
+
+        const login = await loginWithPassword("testpassword123");
+        if (!login.token) throw new Error("Müşteri login token alınamadı.");
+        return login.token;
+      }
+
+      async function createWidgetToken(customerToken) {
+        const payload = await requestJson(`${API_BASE}/tokens`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${customerToken}`,
+          },
+          body: JSON.stringify({
+            domain: window.location.hostname,
+            autoFixEnabled: true,
+            serverPatchEnabled: false,
+          }),
+        });
+
+        const widgetToken = payload?.domain?.token;
+        if (!widgetToken) throw new Error("Widget token cevabı beklenen formatta değil.");
+        return widgetToken;
+      }
+
+      function loadWidgetScript(widgetToken) {
+        const oldScript = document.getElementById("wcagtr-widget-script");
+        if (oldScript) oldScript.remove();
+
+        const script = document.createElement("script");
+        script.id = "wcagtr-widget-script";
+        script.src = WIDGET_SRC;
+        script.async = true;
+        script.setAttribute("data-token", widgetToken);
+        script.setAttribute("data-mode", "auto");
+        script.setAttribute("data-fix-mode", "client");
+        script.setAttribute("data-api-base", API_BASE);
+        script.setAttribute("data-allow-insecure-token-validation", "true");
+        document.body.appendChild(script);
+      }
+
+      async function setupWidget() {
+        setStatus("Widget token hazırlanıyor...");
+        try {
+          const customerToken = await ensureCustomerToken();
+          const widgetToken = await createWidgetToken(customerToken);
+          localStorage.setItem(STORAGE_KEY, widgetToken);
+          loadWidgetScript(widgetToken);
+          setStatus("Widget yüklendi. Sol alttaki ♿ butonundan ayarları test edebilirsiniz.");
+        } catch (error) {
+          setStatus(error.message, true);
+        }
+      }
+
+      function resetWidget() {
+        localStorage.removeItem(STORAGE_KEY);
+        const oldScript = document.getElementById("wcagtr-widget-script");
+        if (oldScript) oldScript.remove();
+        setStatus("Widget sıfırlandı. Yeniden yüklemek için butona basın.");
+      }
+
+      async function checkBackend() {
+        try {
+          await requestJson("http://localhost:3000/health");
+        } catch (error) {
+          setStatus(`Backend erişilemiyor: ${error.message}`, true);
+        }
+      }
+
+      document.getElementById("load-widget-btn").addEventListener("click", setupWidget);
+      document.getElementById("reset-widget-btn").addEventListener("click", resetWidget);
+
+      checkBackend();
+
+      const existingToken = localStorage.getItem(STORAGE_KEY);
+      if (existingToken) {
+        loadWidgetScript(existingToken);
+        setStatus("Kayıtlı token bulundu, widget otomatik yüklendi.");
+      }
+    </script>
+  </body>
+</html>

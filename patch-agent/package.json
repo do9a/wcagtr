@@ -1,0 +1,14 @@
+{
+  "name": "wcagtr-patch-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "WCAGTR server-side patch delivery agent",
+  "main": "agent.js",
+  "scripts": {
+    "start": "node agent.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

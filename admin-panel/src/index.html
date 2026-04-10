@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="WCAG TR Platform Yönetim Paneli - Erişilebilirlik izleme ve müşteri yönetimi"
+        />
+        <meta name="wcagtr-api-base" content="https://wcagtr.app/api/v1" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Admin Panel - WCAG TR Platform</title>
+
+        <!-- Styles -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="styles/main.css" />
+        <link rel="stylesheet" href="styles/components.css" />
+        <link rel="stylesheet" href="styles/responsive.css" />
+
+        <!-- Preconnect to API -->
+        <link rel="preconnect" href="https://wcagtr.app" />
+    </head>
+    <body>
+        <!-- Skip to main content link (WCAG 2.4.1) -->
+        <a href="#main-content" class="skip-link">Ana içeriğe geç</a>
+
+        <!-- Login Screen (shown when not authenticated) -->
+        <div
+            id="login-screen"
+            class="login-container"
+            role="main"
+            aria-labelledby="login-title"
+        >
+            <div class="login-card">
+                <header class="login-header">
+                    <div class="login-brand-mark" aria-hidden="true">
+                        <svg class="login-brand-logo" viewBox="0 0 64 64">
+                            <circle
+                                cx="32"
+                                cy="32"
+                                r="29"
+                                style="
+                                    fill: rgba(255, 107, 44, 0.12);
+                                    stroke: var(--color-primary-dark);
+                                "
+                                stroke-width="3.5"
+                            />
+                            <circle
+                                cx="32"
+                                cy="20"
+                                r="4.8"
+                                style="fill: var(--color-primary-dark)"
+                            />
+                            <path
+                                d="M20 30.5 L32 32 L44 30.5"
+                                fill="none"
+                                style="stroke: var(--color-primary-dark)"
+                                stroke-width="4.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M32 33 L31 43"
+                                fill="none"
+                                style="stroke: var(--color-primary-dark)"
+                                stroke-width="4.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M31 43 L25.5 55"
+                                fill="none"
+                                style="stroke: var(--color-primary-dark)"
+                                stroke-width="4.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M31 43 L37.5 55"
+                                fill="none"
+                                style="stroke: var(--color-primary-dark)"
+                                stroke-width="4.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+                    </div>
+                    <h1 id="login-title" class="login-title">
+                        WCAG TR Platform
+                    </h1>
+                    <p class="login-subtitle">Yönetim Paneli</p>
+                </header>
+
+                <form id="login-form" class="login-form" novalidate>
+                    <div class="form-group">
+                        <label for="admin-email" class="form-label">
+                            E-posta Adresi
+                            <span class="required" aria-label="zorunlu">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            id="admin-email"
+                            name="email"
+                            class="form-input"
+                            required
+                            autocomplete="email"
+                            aria-describedby="email-error"
+                            placeholder="admin@wcagtr.com"
+                        />
+                        <span
+                            id="email-error"
+                            class="error-message"
+                            role="alert"
+                            aria-live="polite"
+                        ></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin-password" class="form-label">
+                            Şifre
+                            <span class="required" aria-label="zorunlu">*</span>
+                        </label>
+                        <input
+                            type="password"
+                            id="admin-password"
+                            name="password"
+                            class="form-input"
+                            required
+                            autocomplete="current-password"
+                            aria-describedby="password-error"
+                            placeholder="••••••••"
+                        />
+                        <span
+                            id="password-error"
+                            class="error-message"
+                            role="alert"
+                            aria-live="polite"
+                        ></span>
+                    </div>
+
+                    <div
+                        id="login-error"
+                        class="alert alert-error"
+                        role="alert"
+                        aria-live="assertive"
+                        hidden
+                    ></div>
+
+                    <button
+                        type="submit"
+                        id="login-button"
+                        class="btn btn-primary btn-block"
+                    >
+                        <span class="btn-text">Giriş Yap</span>
+                        <span class="btn-loader" hidden aria-hidden="true">
+                            <span class="spinner"></span>
+                        </span>
+                    </button>
+                </form>
+
+                <footer class="login-footer">
+                    <button id="lang-toggle" class="btn-link" type="button">
+                        <span lang="en">English</span>
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+        <!-- App Container (shown when authenticated) -->
+        <div id="app-container" class="app-layout" hidden>
+            <!-- Navigation -->
+            <nav
+                id="app-nav"
+                class="app-nav"
+                role="navigation"
+                aria-label="Ana navigasyon"
+            >
+                <div class="nav-header">
+                    <h1 class="nav-brand">
+                        <span class="nav-brand-logo-wrap" aria-hidden="true">
+                            <svg
+                                class="nav-brand-logo"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.15"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <circle cx="16" cy="4" r="1" />
+                                <path d="m18 19 1-7-6 1" />
+                                <path d="m5 8 3-3 5.5 3-2.36 3.5" />
+                                <path d="M4.24 14.5a5 5 0 0 0 6.88 6" />
+                                <path d="M13.76 17.5a5 5 0 0 0-6.88-6" />
+                            </svg>
+                        </span>
+                        WCAG TR
+                    </h1>
+                    <button
+                        id="nav-toggle"
+                        class="nav-toggle"
+                        type="button"
+                        aria-expanded="false"
+                        aria-label="Menüyü aç/kapat"
+                    >
+                        <span class="toggle-icon"></span>
+                    </button>
+                </div>
+
+                <ul id="nav-menu" class="nav-menu" role="list">
+                    <li>
+                        <a
+                            href="#/dashboard"
+                            class="nav-link"
+                            data-route="dashboard"
+                            aria-current="page"
+                        >
+                            <span class="nav-icon" aria-hidden="true">
+                                <svg
+                                    class="nav-icon-svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <rect width="7" height="9" x="3" y="3" rx="1" />
+                                    <rect width="7" height="5" x="14" y="3" rx="1" />
+                                    <rect width="7" height="9" x="14" y="12" rx="1" />
+                                    <rect width="7" height="5" x="3" y="16" rx="1" />
+                                </svg>
+                            </span>
+                            <span class="nav-text">Genel Bakış</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#/customers"
+                            class="nav-link"
+                            data-route="customers"
+                        >
+                            <span class="nav-icon" aria-hidden="true">
+                                <svg
+                                    class="nav-icon-svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                    <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                    <circle cx="9" cy="7" r="4" />
+                                </svg>
+                            </span>
+                            <span class="nav-text">Müşteriler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/scans" class="nav-link" data-route="scans">
+                            <span class="nav-icon" aria-hidden="true">
+                                <svg
+                                    class="nav-icon-svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="m21 21-4.34-4.34" />
+                                    <circle cx="11" cy="11" r="8" />
+                                </svg>
+                            </span>
+                            <span class="nav-text">Taramalar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/tokens" class="nav-link" data-route="tokens">
+                            <span class="nav-icon" aria-hidden="true">
+                                <svg
+                                    class="nav-icon-svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+                                    <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <span class="nav-text">Tokenlar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#/pricing"
+                            class="nav-link"
+                            data-route="pricing"
+                        >
+                            <span class="nav-icon" aria-hidden="true">
+                                <svg
+                                    class="nav-icon-svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                                    <line x1="2" x2="22" y1="10" y2="10" />
+                                </svg>
+                            </span>
+                            <span class="nav-text">Fiyatlandırma</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/health" class="nav-link" data-route="health">
+                            <span class="nav-icon" aria-hidden="true">
+                                <svg
+                                    class="nav-icon-svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
+                                </svg>
+                            </span>
+                            <span class="nav-text">Sistem Sağlığı</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-footer">
+                    <div class="admin-info">
+                        <span id="admin-name" class="admin-name"></span>
+                        <span
+                            id="admin-email-display"
+                            class="admin-email"
+                        ></span>
+                    </div>
+                    <button
+                        id="logout-button"
+                        class="btn btn-secondary btn-sm"
+                        type="button"
+                    >
+                        <span class="btn-icon-inline" aria-hidden="true">
+                            <svg
+                                class="btn-icon-svg"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d="m16 17 5-5-5-5" />
+                                <path d="M21 12H9" />
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            </svg>
+                        </span>
+                        Çıkış
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main id="main-content" class="app-main" role="main" tabindex="-1">
+                <!-- Dynamic content loaded by router -->
+                <div id="view-container" class="view-container">
+                    <!-- Loading state -->
+                    <div
+                        id="loading-view"
+                        class="loading-view"
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <div class="spinner-large"></div>
+                        <p>Yükleniyor...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Toast Notification Container -->
+        <div
+            id="toast-container"
+            class="toast-container"
+            role="region"
+            aria-label="Bildirimler"
+            aria-live="polite"
+        ></div>
+
+        <!-- Modal Container (for reusable modals) -->
+        <div id="modal-container" class="modal-container" hidden></div>
+
+        <!-- Scripts (ES Modules) -->
+        <script type="module" src="i18n/tr.js"></script>
+        <script type="module" src="i18n/en.js"></script>
+        <script type="module" src="auth.js"></script>
+        <script type="module" src="api.js"></script>
+        <script type="module" src="components/navbar.js"></script>
+        <script type="module" src="components/modal.js"></script>
+        <script type="module" src="components/table.js"></script>
+        <script type="module" src="components/dashboard.js"></script>
+        <script type="module" src="components/customers.js"></script>
+        <script type="module" src="components/scans.js"></script>
+        <script type="module" src="components/tokens.js"></script>
+        <script type="module" src="components/pricing.js"></script>
+        <script type="module" src="components/customerdetail.js"></script>
+        <script type="module" src="components/health.js"></script>
+        <script type="module" src="app.js"></script>
+    </body>
+</html>

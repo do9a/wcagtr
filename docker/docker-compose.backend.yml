@@ -1,0 +1,92 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: wcagtr-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wcagtr
+      POSTGRES_USER: wcagtr_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wcagtr_user -d wcagtr"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: wcagtr-api
+    restart: unless-stopped
+    command: sh -c "node migrations/run.js && node src/index.js"
+    expose:
+      - "3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: wcagtr
+      DB_USER: wcagtr_user
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      TOKEN_SIGNING_KEY: ${TOKEN_SIGNING_KEY}
+      WIDGET_JWT_PRIVATE_KEY: ${WIDGET_JWT_PRIVATE_KEY}
+      WIDGET_JWT_PUBLIC_KEY: ${WIDGET_JWT_PUBLIC_KEY}
+      WIDGET_JWT_EXPIRES_IN: ${WIDGET_JWT_EXPIRES_IN:-365d}
+      WIDGET_API_BASE: ${WIDGET_API_BASE:-https://wcagtr.app/api/v1}
+      AI_PROVIDER: ${AI_PROVIDER:-gemini}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-mock}
+      PAYMENT_WEBHOOK_SECRET: ${PAYMENT_WEBHOOK_SECRET}
+      PAYMENT_CHECKOUT_BASE_URL: ${PAYMENT_CHECKOUT_BASE_URL:-https://wcagtr.app}
+      PAYMENT_AUTO_APPROVE_MOCK: ${PAYMENT_AUTO_APPROVE_MOCK:-false}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_SUCCESS_URL: ${STRIPE_SUCCESS_URL:-https://customer.wcagtr.com/#/billing?payment=success&session_id={CHECKOUT_SESSION_ID}}
+      STRIPE_CANCEL_URL: ${STRIPE_CANCEL_URL:-https://customer.wcagtr.com/#/billing?payment=cancelled}
+      STRIPE_WEBHOOK_TOLERANCE_SECONDS: ${STRIPE_WEBHOOK_TOLERANCE_SECONDS:-300}
+      IYZICO_API_BASE_URL: ${IYZICO_API_BASE_URL:-https://sandbox-api.iyzipay.com}
+      IYZICO_API_KEY: ${IYZICO_API_KEY}
+      IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY}
+      IYZICO_CALLBACK_URL: ${IYZICO_CALLBACK_URL:-https://wcagtr.app/api/v1/payments/webhook/iyzico}
+      IYZICO_DEFAULT_GSM: ${IYZICO_DEFAULT_GSM:-+905350000000}
+      IYZICO_DEFAULT_IDENTITY_NUMBER: ${IYZICO_DEFAULT_IDENTITY_NUMBER:-11111111111}
+      IYZICO_DEFAULT_ADDRESS: ${IYZICO_DEFAULT_ADDRESS:-Maslak Mah. Teknoloji Cad. No:1}
+      IYZICO_DEFAULT_CITY: ${IYZICO_DEFAULT_CITY:-Istanbul}
+      IYZICO_DEFAULT_COUNTRY: ${IYZICO_DEFAULT_COUNTRY:-Turkey}
+      IYZICO_DEFAULT_ZIP_CODE: ${IYZICO_DEFAULT_ZIP_CODE:-34000}
+      IYZICO_DEFAULT_BUYER_IP: ${IYZICO_DEFAULT_BUYER_IP:-85.34.78.112}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend-network
+
+  backend-gateway:
+    image: nginx:alpine
+    container_name: wcagtr-backend-gateway
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/backend-gateway.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - backend-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  backend-network:
+    driver: bridge

@@ -1,0 +1,12 @@
+{
+  "name": "wcagtr-widget-build",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "devDependencies": {
+    "terser": "^5.39.2"
+  }
+}

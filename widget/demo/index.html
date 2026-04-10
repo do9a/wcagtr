@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WCAGTR Widget Demo</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 2rem;
+                background: #f5f5f5;
+            }
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                padding: 2rem;
+                border-radius: 8px;
+            }
+            h1 {
+                color: #333;
+            }
+            button {
+                background: #4caf50;
+                color: white;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin: 0.5rem;
+            }
+            .status {
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 4px;
+                background: #e3f2fd;
+            }
+            .low-contrast {
+                color: #ccc;
+                background: #fff;
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🎯 WCAGTR Widget Demo</h1>
+            <div class="status" id="status">Backend: Kontrol ediliyor...</div>
+
+            <h2>Test Alanı</h2>
+            <div class="low-contrast">Düşük kontrastlı metin (WCAG ihlali)</div>
+            <img
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100'%3E%3C/svg%3E"
+                width="200"
+                height="100"
+            />
+            <input type="text" placeholder="Label olmayan input" />
+
+            <h2>Kontroller</h2>
+            <button id="backend-test-btn" type="button">Backend Test</button>
+            <button id="create-token-btn" type="button">Token Oluştur</button>
+
+            <div id="results"></div>
+        </div>
+
+        <script>
+            const DEMO_ACCOUNT_STORAGE_KEY = "wcagtr_demo_account_v1";
+
+            function loadWidget(widgetToken) {
+                const previousScript = document.getElementById("wcagtr-widget-script");
+                if (previousScript) previousScript.remove();
+
+                const script = document.createElement("script");
+                script.id = "wcagtr-widget-script";
+                script.src = "http://localhost:3000/cdn/widget.js";
+                script.async = true;
+                script.setAttribute("data-token", widgetToken);
+                script.setAttribute("data-mode", "auto");
+                script.setAttribute("data-fix-mode", "client");
+                script.setAttribute("data-api-base", "http://localhost:3000/api/v1");
+                script.setAttribute("data-allow-insecure-token-validation", "true");
+                document.body.appendChild(script);
+            }
+
+            function getOrCreateDemoAccount() {
+                const savedRaw = localStorage.getItem(DEMO_ACCOUNT_STORAGE_KEY);
+                if (savedRaw) {
+                    try {
+                        const saved = JSON.parse(savedRaw);
+                        if (saved?.email && saved?.password && saved?.companyName) {
+                            return saved;
+                        }
+                    } catch (_) {
+                        localStorage.removeItem(DEMO_ACCOUNT_STORAGE_KEY);
+                    }
+                }
+
+                const suffix = `${Date.now().toString(36)}${Math.floor(Math.random() * 10000)
+                    .toString()
+                    .padStart(4, "0")}`;
+                const mailDomain = `${suffix}.wcagtr-demo.local`;
+                const account = {
+                    email: `demo@${mailDomain}`,
+                    password: "DemoPass123!",
+                    companyName: `Demo Sirket ${suffix}`,
+                    contactName: "Demo Kullanici",
+                };
+                localStorage.setItem(DEMO_ACCOUNT_STORAGE_KEY, JSON.stringify(account));
+                return account;
+            }
+
+            async function tryAuth(account) {
+                const loginRes = await fetch("http://localhost:3000/api/v1/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: account.email,
+                        password: account.password,
+                    }),
+                });
+                const loginData = await loginRes.json();
+                if (loginRes.ok && loginData?.token) {
+                    return { token: loginData.token };
+                }
+
+                const registerRes = await fetch("http://localhost:3000/api/v1/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(account),
+                });
+                const registerData = await registerRes.json();
+                if (registerRes.ok && registerData?.token) {
+                    return { token: registerData.token };
+                }
+
+                return {
+                    error:
+                        loginData?.error ||
+                        registerData?.error ||
+                        "Demo hesabına giriş/kayıt başarısız",
+                };
+            }
+
+            async function ensureDemoLoginToken() {
+                let account = getOrCreateDemoAccount();
+                let result = await tryAuth(account);
+
+                if (!result.token && /90 gün|trial/i.test(result.error || "")) {
+                    localStorage.removeItem(DEMO_ACCOUNT_STORAGE_KEY);
+                    account = getOrCreateDemoAccount();
+                    result = await tryAuth(account);
+                }
+
+                if (!result.token) {
+                    throw new Error(result.error || "Demo hesabına giriş/kayıt başarısız");
+                }
+                return result.token;
+            }
+
+            async function testBackend() {
+                const res = await fetch("http://localhost:3000/health");
+                const data = await res.json();
+                document.getElementById("status").innerHTML =
+                    `Backend: ${data.status} | DB: ${data.database}`;
+            }
+
+            async function createToken() {
+                try {
+                    const currentHost = window.location.hostname;
+                    if (currentHost === "localhost" || currentHost === "127.0.0.1") {
+                        window.location.replace(
+                            `http://lvh.me:${window.location.port || "8080"}${
+                                window.location.pathname
+                            }`,
+                        );
+                        return;
+                    }
+
+                    const authToken = await ensureDemoLoginToken();
+
+                    // Create token
+                    const token = await fetch(
+                        "http://localhost:3000/api/v1/tokens",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${authToken}`,
+                            },
+                            body: JSON.stringify({
+                                domain: currentHost,
+                                autoFixEnabled: true,
+                            }),
+                        },
+                    );
+                    const tokenData = await token.json();
+                    let widgetToken = tokenData?.domain?.token;
+                    if (!widgetToken) {
+                        const tokenListRes = await fetch(
+                            "http://localhost:3000/api/v1/tokens",
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${authToken}`,
+                                },
+                            },
+                        );
+                        const tokenListData = await tokenListRes.json();
+                        const existingToken = (tokenListData?.tokens || []).find(
+                            (entry) => entry.domain === currentHost && entry.is_active,
+                        );
+                        widgetToken = existingToken?.token || existingToken?.widget_token;
+                    }
+                    if (!widgetToken) {
+                        throw new Error("Token cevabı beklenen formatta değil");
+                    }
+
+                    loadWidget(widgetToken);
+
+                    document.getElementById("results").innerHTML = `
+          <div class="status">
+            ✅ Token oluşturuldu ve widget yüklendi.<br>
+            <small>${widgetToken.substring(0, 80)}...</small><br>
+            <small>Sol altta ♿ butonunu görebilirsiniz.</small>
+          </div>
+        `;
+                } catch (e) {
+                    document.getElementById("results").innerHTML =
+                        `<div class="status">❌ ${e.message}</div>`;
+                }
+            }
+
+            document
+                .getElementById("backend-test-btn")
+                .addEventListener("click", testBackend);
+            document
+                .getElementById("create-token-btn")
+                .addEventListener("click", createToken);
+            testBackend();
+            createToken();
+        </script>
+    </body>
+</html>
