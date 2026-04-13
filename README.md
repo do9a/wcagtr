@@ -98,13 +98,6 @@ cp .env.web.example .env.web
 docker compose --env-file .env.web -f docker-compose.web.yml up -d --build
 ```
 
-### DNS Önerisi
-
-- `wcagtr.com` + `www.wcagtr.com` → release
-- `admin.wcagtr.com` → admin panel
-- `customer.wcagtr.com` (veya `app.wcagtr.com`) → customer panel
-- `api.wcagtr.app` (veya `wcagtr.app`) → backend API
-
 ## 📊 Hızlı Test
 
 ```bash
@@ -120,28 +113,12 @@ curl -X POST http://localhost:3000/api/v1/auth/register \
 # Detaylı örnekler: WIDGET_INTEGRATION.md
 ```
 
-## 🔐 İlk Admin Girişi
-
-Migration'lar çalıştırıldığında otomatik admin kullanıcısı oluşturulur:
-
-- **Email:** `admin@wcagtr.com`
-- **Password:** `admin123`
-
-⚠️ **ÖNEMLİ:** İlk giriş sonrası şifreyi mutlaka değiştirin!
-
 ## 📡 API Endpoints
 
 ### Health Check
 ```bash
 GET /health
 GET /ready
-```
-
-### Authentication
-```bash
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-POST /api/v1/auth/admin/login
 ```
 
 ### Scanner
@@ -165,50 +142,6 @@ Notlar:
 - Domain oluşturma plan domain limiti ile sınırlandırılır.
 - `serverPatchEnabled=true` sadece patch yetkisi olan planlarda kabul edilir.
 
-### Webhooks
-```bash
-GET /api/v1/webhooks                   # Müşteri webhook listesi
-POST /api/v1/webhooks                  # Yeni webhook oluştur
-PATCH /api/v1/webhooks/:id             # Webhook güncelle (aktif/pasif, olaylar)
-DELETE /api/v1/webhooks/:id            # Webhook sil
-POST /api/v1/webhooks/:id/test         # Test webhook gönder
-GET /api/v1/webhooks/:id/deliveries    # Son teslimat kayıtları
-```
-
-### Payments
-```bash
-POST /api/v1/payments/webhook/mock     # Mock ödeme webhook callback
-POST /api/v1/payments/webhook/stripe   # Stripe webhook callback (imza doğrulamalı)
-POST /api/v1/payments/webhook/iyzico   # iyzico callback (token doğrulama + detail sorgu)
-POST /api/v1/payments/mock/confirm     # Mock checkout ödeme onayı
-GET  /api/v1/payments/mock/checkout    # Mock checkout sayfası
-```
-
-Stripe kullanımı için:
-- `PAYMENT_PROVIDER=stripe`
-- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` zorunlu
-- `STRIPE_SUCCESS_URL`, `STRIPE_CANCEL_URL` dönüş URL'leri
-
-iyzico kullanımı için:
-- `PAYMENT_PROVIDER=iyzico`
-- `IYZICO_API_KEY`, `IYZICO_SECRET_KEY` zorunlu
-- `IYZICO_CALLBACK_URL` ödeme dönüş/callback adresi
-
-### Admin Billing
-```bash
-GET   /api/v1/admin/billing/plans      # Plan + fiyat listesi
-PATCH /api/v1/admin/billing/plans/:code # Plan fiyatı/özellik güncelle
-GET   /api/v1/admin/customers/:id/detail # Müşteri detay görünümü
-```
-
-### Widget CDN & Config
-```bash
-GET /cdn/widget.js         # Production widget (build varsa), yoksa source fallback
-GET /cdn/widget-dev.js     # Development widget
-GET /cdn/widget.sri.json   # SRI hash metadata (build sonrası)
-GET /api/v1/widget/config  # Widget apiBase/publicKey yapılandırması
-```
-
 ### Patch Agent (Server-Side)
 ```bash
 cd patch-agent
@@ -216,12 +149,6 @@ cp .env.example .env
 # PATCH_AGENT_WIDGET_TOKEN + PATCH_AGENT_SIGNING_KEY doldurun
 npm start
 ```
-
-Agent akışı:
-- `GET /api/v1/patches/pending` ile patch çeker
-- HMAC-SHA256 imza doğrular (`TOKEN_SIGNING_KEY`)
-- Hedef dosyaya uygular, yedek alır (son 5 versiyon)
-- `POST /api/v1/patches/applied` çağrısında `patchId` + `patchSignature` gönderir
 
 ## 🗄️ Veritabanı Şeması
 
@@ -259,10 +186,6 @@ Agent akışı:
 - Nginx (SSL termination, CDN)
 - Fedora Linux host
 
-**AI:**
-- Google Gemini 1.5 Flash (API key varsa gerçek model, yoksa fallback)
-- Local model migration planned
-
 ## 🛠️ Development
 
 ### Backend Server
@@ -282,57 +205,3 @@ docker compose logs -f postgres
 # Health check
 curl http://localhost:3000/health
 ```
-
-## 🔒 Güvenlik
-
-- JWT token validation (client + server)
-- Domain binding enforcement
-- Rate limiting (per endpoint)
-- Helmet security headers
-- Content-Security-Policy (CSP) headers
-- CORS configuration
-- SQL injection protection (parameterized queries)
-- Password hashing (bcrypt, rounds=10)
-- KVKK compliant data handling
-
-## 📝 TODO
-
-**Tamamlanan:**
-- [x] Database schema (15 tablo)
-- [x] Authentication system (JWT, bcrypt)
-- [x] Health check endpoints
-- [x] Rate limiting
-- [x] Request logging
-- [x] Scanner API (`/scan/report`)
-- [x] Token management (`/tokens` CRUD)
-- [x] Widget (dev versiyonu — DOM scanner, IndexedDB, client-fix)
-- [x] Admin panel SPA (dashboard, customers, scans, tokens, health, pricing)
-- [x] Customer panel SPA (dashboard, scans, tokens, domains, billing, webhooks)
-
-**Eksik / Devam Eden:**
-- [x] **Gemini AI entegrasyonu** — `/scan/ai` gerçek model + fallback akışıyla aktif
-- [x] **`/patches/request` endpoint** — widget çağrısı backend route'una bağlandı
-- [x] **Widget production build** — CDN minification + SRI build pipeline + apiBase normalization
-- [x] **Widget public key** — build-time PEM embedding + client-side RS256 verify (dev override opsiyonlu)
-- [x] **Fix approval workflow** — customer panel'de AI fix onaylama/reddetme
-- [x] **Billing & subscription** — dinamik planlar (`billing_plans`) + `/api/v1/customer/billing*` + customer panel `#/billing`
-- [x] **Admin fiyat düzenleme modülü** — admin panel `#/pricing` ile plan/fiyat/özellik güncelleme
-- [x] **Ödeme entegrasyonu** — `payment_transactions` + mock checkout + Stripe + iyzico checkout/webhook akışı
-- [ ] **Canlı ödeme doğrulaması** — Stripe/iyzico production credential + canlı callback doğrulama eksik
-- [x] **Admin customer suspend** — `is_suspended` alanı + backend ve admin panel akışı aktif
-- [x] **Admin customer detail** — `#/customer-detail?id=:id` ile müşteri özet + domain + scan + ödeme görünümü
-- [x] **Customer scan detail** — `#/scans/:id` ile ihlal breakdown + fix durumları
-- [x] **Patch agent (core)** — `patch-agent/agent.js` ile polling + HMAC verify + rollback (5 backup) aktif
-- [ ] **Patch agent enterprise modu** — Nginx/Apache reverse-proxy rule apply akışı eksik
-- [x] **Webhook notifications (core)** — webhook CRUD + test + delivery log + scan/fix/billing event tetikleme aktif
-- [x] **Webhook retry/backoff** — başarısız teslimatlarda exponential backoff (max 3 deneme)
-- [x] **DB migration** — `004_billing_payment.sql` dahil migration'lar çalıştırıldı
-- [ ] Production deployment (Nginx SSL, CDN)
-
-## 📄 Lisans
-
-Özel - WCAGTR Platform
-
-## 👥 Geliştirici
-
-Bu proje GitHub Copilot + wcag-tr-vanillajs skill ile geliştirilmiştir.

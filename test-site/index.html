@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teknova Yazılım — Kurumsal Çözümler</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; background: #fff; line-height: 1.6; }
+
+    /* ===== SKIP LINK (erişilebilir) ===== */
+    .skip-link {
+      position: absolute; top: -40px; left: 1rem;
+      background: #004E89; color: #fff; padding: 0.5rem 1rem;
+      border-radius: 0 0 4px 4px; text-decoration: none; z-index: 9999;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ===== HEADER & NAV ===== */
+    header {
+      background: #004E89;
+      color: #fff;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; height: 64px;
+    }
+    .logo { font-size: 1.4rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .logo span { color: #FF6B35; }
+
+    nav ul { list-style: none; display: flex; gap: 0.25rem; }
+    nav a {
+      color: #e0eaf4; text-decoration: none; padding: 0.5rem 0.875rem;
+      border-radius: 4px; font-size: 0.95rem; transition: background 0.15s;
+    }
+    nav a:hover, nav a:focus {
+      background: rgba(255,255,255,0.15); color: #fff;
+      outline: 2px solid #F7C59F; outline-offset: 2px;
+    }
+    nav a[aria-current="page"] { background: #FF6B35; color: #fff; }
+
+    /* Hamburger (mobil) */
+    .menu-toggle {
+      display: none; background: none; border: 2px solid #fff;
+      color: #fff; padding: 0.4rem 0.6rem; border-radius: 4px; cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, #004E89 0%, #1A659E 60%, #FF6B35 100%);
+      color: #fff; text-align: center;
+      padding: 5rem 1.5rem 4rem;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
+    .hero p { font-size: 1.2rem; max-width: 640px; margin: 0 auto 2rem; opacity: 0.9; }
+    .btn-primary {
+      display: inline-block; background: #FF6B35; color: #fff;
+      padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none;
+      font-weight: 700; font-size: 1.05rem; transition: background 0.15s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover, .btn-primary:focus {
+      background: #e55a24; outline: 3px solid #F7C59F; outline-offset: 3px;
+    }
+    .btn-secondary {
+      display: inline-block; background: transparent; color: #fff;
+      padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none;
+      font-weight: 600; font-size: 1.05rem; border: 2px solid #fff;
+      margin-left: 1rem; transition: background 0.15s;
+    }
+    .btn-secondary:hover, .btn-secondary:focus {
+      background: rgba(255,255,255,0.15);
+      outline: 3px solid #F7C59F; outline-offset: 3px;
+    }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 4rem 1.5rem; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .section-title { font-size: 2rem; font-weight: 700; color: #004E89; margin-bottom: 0.5rem; }
+    .section-subtitle { color: #555; margin-bottom: 2.5rem; font-size: 1.05rem; }
+
+    /* ===== STATS ===== */
+    .stats { background: #f0f6ff; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem; text-align: center;
+    }
+    .stat-number { font-size: 2.8rem; font-weight: 800; color: #FF6B35; }
+    .stat-label { color: #444; font-size: 0.95rem; margin-top: 0.25rem; }
+
+    /* ===== HIZMETLER ===== */
+    .services-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      border: 1px solid #dde5f0; border-radius: 10px; padding: 1.75rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .card:hover { box-shadow: 0 8px 24px rgba(0,78,137,0.12); transform: translateY(-3px); }
+    .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .card h3 { font-size: 1.15rem; font-weight: 700; color: #004E89; margin-bottom: 0.5rem; }
+    .card p { color: #555; font-size: 0.95rem; }
+    .card-link {
+      display: inline-block; margin-top: 1rem; color: #FF6B35;
+      font-weight: 600; text-decoration: none; font-size: 0.9rem;
+    }
+    .card-link:hover, .card-link:focus { text-decoration: underline; outline: 2px solid #FF6B35; outline-offset: 2px; }
+
+    /* ===== NASIL ÇALIŞIR ===== */
+    .how { background: #faf9f7; }
+    .steps { display: flex; flex-direction: column; gap: 2rem; max-width: 700px; }
+    .step { display: flex; gap: 1.25rem; align-items: flex-start; }
+    .step-num {
+      min-width: 48px; height: 48px; border-radius: 50%;
+      background: #004E89; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .step p { color: #555; font-size: 0.95rem; }
+
+    /* ===== TABLO ===== */
+    .pricing { background: #f0f6ff; }
+    .table-wrapper { overflow-x: auto; }
+    table {
+      width: 100%; border-collapse: collapse;
+      background: #fff; border-radius: 10px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    caption {
+      font-size: 1.1rem; font-weight: 700; color: #004E89;
+      padding: 1rem; text-align: left; caption-side: top;
+    }
+    thead th {
+      background: #004E89; color: #fff; text-align: left;
+      padding: 0.875rem 1.25rem; font-size: 0.95rem;
+    }
+    tbody tr:nth-child(even) { background: #f5f9ff; }
+    tbody td { padding: 0.875rem 1.25rem; border-bottom: 1px solid #e5eaf2; font-size: 0.95rem; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #e8f0fb; }
+    .badge {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 99px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .badge-green { background: #d4edda; color: #155724; }
+    .badge-orange { background: #fff3cd; color: #856404; }
+    .badge-red { background: #f8d7da; color: #721c24; }
+
+    /* ===== FORM ===== */
+    .contact { background: #fff; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.9rem; font-weight: 600; color: #333; }
+    label .required { color: #d32f2f; margin-left: 0.2rem; }
+    input, select, textarea {
+      padding: 0.65rem 0.875rem; border: 2px solid #ccd5e0;
+      border-radius: 6px; font-size: 1rem; font-family: inherit;
+      transition: border-color 0.15s; width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: #004E89;
+      box-shadow: 0 0 0 3px rgba(0,78,137,0.15);
+    }
+    input[aria-invalid="true"], select[aria-invalid="true"] {
+      border-color: #d32f2f;
+    }
+    .field-error { color: #d32f2f; font-size: 0.85rem; display: none; }
+    .field-error.visible { display: block; }
+    textarea { resize: vertical; min-height: 120px; }
+    .form-check { display: flex; align-items: flex-start; gap: 0.6rem; }
+    .form-check input[type="checkbox"] { margin-top: 0.2rem; width: auto; accent-color: #004E89; }
+    .form-check label { font-weight: 400; font-size: 0.9rem; cursor: pointer; }
+    .form-actions { grid-column: 1 / -1; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .form-success {
+      display: none; background: #d4edda; color: #155724;
+      padding: 1rem 1.25rem; border-radius: 6px; font-weight: 600;
+    }
+    .form-success.visible { display: block; }
+
+    /* ===== WCAG İHLALLERİ — test için kasıtlı ===== */
+    /* İhlal 1: Düşük kontrastlı metin */
+    .low-contrast-text {
+      color: #aaa; /* #aaa on #fff = ~2.3:1 — WCAG AA başarısız */
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    /* İhlal 2: Dekoratif olmayan resim, alt eksik (HTML'de) */
+    /* İhlal 3: Tıklanabilir div (HTML'de) */
+    .clickable-div {
+      background: #e8f0fb; padding: 1rem; border-radius: 6px;
+      cursor: pointer; color: #004E89; font-weight: 600;
+      margin-top: 1rem;
+    }
+    /* İhlal 4: Başlık hiyerarşisi atlaması (h2 → h5 geçiş — HTML'de) */
+
+    /* ===== GALERI ===== */
+    .gallery { background: #faf9f7; }
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .gallery-grid img {
+      width: 100%; height: 160px; object-fit: cover;
+      border-radius: 8px; display: block;
+    }
+
+    /* ===== REFERANSLAR ===== */
+    .refs { background: #004E89; color: #fff; padding: 3rem 1.5rem; }
+    .refs-grid {
+      display: flex; flex-wrap: wrap; gap: 2rem;
+      justify-content: center; align-items: center;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .ref-logo {
+      background: rgba(255,255,255,0.1); border-radius: 8px;
+      padding: 1rem 2rem; font-weight: 700; font-size: 1.05rem;
+      color: rgba(255,255,255,0.85); letter-spacing: 0.05em;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #0d1b2a; color: #9fb3c8;
+      padding: 3rem 1.5rem 1.5rem;
+    }
+    .footer-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem; padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer-col h4 { color: #fff; font-size: 1rem; margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.5rem; }
+    .footer-col a { color: #9fb3c8; text-decoration: none; font-size: 0.9rem; }
+    .footer-col a:hover, .footer-col a:focus {
+      color: #FF6B35; text-decoration: underline;
+      outline: 2px solid #FF6B35; outline-offset: 2px;
+    }
+    .footer-bottom {
+      max-width: 1200px; margin: 1.5rem auto 0;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.5rem;
+    }
+    .footer-bottom p { font-size: 0.85rem; }
+    .footer-bottom a { color: #FF6B35; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      nav ul { display: none; flex-direction: column; }
+      nav ul.open { display: flex; }
+      .menu-toggle { display: block; }
+      .header-inner { flex-wrap: wrap; height: auto; padding: 0.75rem 1.5rem; gap: 0.5rem; }
+      nav { width: 100%; }
+      nav ul { padding: 0.5rem 0 1rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .btn-secondary { margin-left: 0; margin-top: 0.75rem; }
+      .hero { padding: 3rem 1.5rem; }
+    }
+
+    /* ===== DEMO BANNER ===== */
+    #wcagtr-demo-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 9000;
+      background: linear-gradient(90deg, #0d1b2a, #004E89);
+      color: #e0eaf4; font-size: 0.82rem; font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.45rem 1rem; gap: 0.75rem;
+      border-top: 1px solid rgba(255,107,53,0.4);
+    }
+    #wcagtr-demo-bar .demo-left { display: flex; align-items: center; gap: 0.6rem; }
+    #wcagtr-demo-bar .demo-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #aaa; flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    #wcagtr-demo-bar .demo-dot.ok  { background: #4caf50; box-shadow: 0 0 6px #4caf5080; }
+    #wcagtr-demo-bar .demo-dot.err { background: #f44336; }
+    #wcagtr-demo-bar .demo-dot.loading { background: #FF6B35; animation: demoPulse 1s infinite; }
+    @keyframes demoPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    #wcagtr-demo-bar .demo-label { font-weight: 600; color: #FF6B35; white-space: nowrap; }
+    #wcagtr-demo-bar .demo-msg { color: #9fb3c8; }
+    #wcagtr-demo-bar .demo-close {
+      background: none; border: 1px solid rgba(255,255,255,0.2); color: #9fb3c8;
+      border-radius: 4px; padding: 0.2rem 0.55rem; cursor: pointer; font-size: 0.78rem;
+      flex-shrink: 0;
+    }
+    #wcagtr-demo-bar .demo-close:hover { border-color: #FF6B35; color: #FF6B35; }
+    #wcagtr-demo-bar .demo-close:focus {
+      outline: 2px solid #F7C59F; outline-offset: 2px;
+    }
+    /* bar gösterilince footer'ın altına sığdır */
+    body.has-demo-bar footer { padding-bottom: 3.5rem; }
+
+    /* ===== FOCUS VISIBLE ===== */
+    :focus-visible {
+      outline: 3px solid #FF6B35; outline-offset: 3px;
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">Ana içeriğe geç</a>
+
+  <!-- ===== WCAGTR DEMO STATUS BAR ===== -->
+  <div id="wcagtr-demo-bar" role="status" aria-live="polite" aria-label="WCAGTR widget durumu">
+    <div class="demo-left">
+      <span class="demo-dot loading" id="demo-dot" aria-hidden="true"></span>
+      <span class="demo-label">WCAGTR Demo</span>
+      <span class="demo-msg" id="demo-msg">Widget yükleniyor…</span>
+    </div>
+    <button class="demo-close" id="demo-close" aria-label="Demo çubuğunu kapat">✕ Kapat</button>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header role="banner">
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="Teknova Yazılım Ana Sayfa">Tekno<span>va</span></a>
+
+      <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav"
+              aria-label="Menüyü aç/kapat">&#9776;</button>
+
+      <nav role="navigation" aria-label="Ana menü">
+        <ul id="main-nav" role="list">
+          <li><a href="#hizmetler" aria-current="page">Hizmetler</a></li>
+          <li><a href="#nasil-calisir">Nasıl Çalışır</a></li>
+          <li><a href="#paketler">Paketler</a></li>
+          <li><a href="#galeri">Galeri</a></li>
+          <li><a href="#iletisim">İletişim</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main id="main-content" tabindex="-1">
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <h1 id="hero-heading">Dijital Dönüşümde<br>Güvenilir Ortağınız</h1>
+      <p>Kurumsal yazılım, mobil uygulama ve bulut çözümleriyle işletmenizi geleceğe taşıyoruz. 15 yıldır 500+ müşteriye hizmet veriyoruz.</p>
+      <a href="#iletisim" class="btn-primary">Ücretsiz Demo Al</a>
+      <a href="#hizmetler" class="btn-secondary">Hizmetlerimiz</a>
+    </section>
+
+    <!-- İSTATİSTİKLER -->
+    <section class="stats" aria-labelledby="stats-heading">
+      <div class="container">
+        <h2 id="stats-heading" class="section-title">Rakamlarla Teknova</h2>
+        <p class="section-subtitle">15 yıllık deneyimle sektörün öncüsü</p>
+        <div class="stats-grid" role="list">
+          <div role="listitem">
+            <div class="stat-number" aria-label="500 artı proje">500+</div>
+            <div class="stat-label">Tamamlanan Proje</div>
+          </div>
+          <div role="listitem">
+            <div class="stat-number" aria-label="yüzde 98">%98</div>
+            <div class="stat-label">Müşteri Memnuniyeti</div>
+          </div>
+          <div role="listitem">
+            <div class="stat-number" aria-label="250 artı uzman">250+</div>
+            <div class="stat-label">Uzman Çalışan</div>
+          </div>
+          <div role="listitem">
+            <div class="stat-number" aria-label="15 yıl">15</div>
+            <div class="stat-label">Yıllık Deneyim</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HİZMETLER -->
+    <section id="hizmetler" aria-labelledby="services-heading">
+      <div class="container">
+        <h2 id="services-heading" class="section-title">Hizmetlerimiz</h2>
+        <p class="section-subtitle">İhtiyacınıza özel kapsamlı teknoloji çözümleri</p>
+
+        <div class="services-grid">
+          <article class="card" aria-labelledby="card1-title">
+            <div class="card-icon" aria-hidden="true">🖥️</div>
+            <h3 id="card1-title">Kurumsal Yazılım</h3>
+            <p>ERP, CRM ve özel yazılım geliştirme hizmetleriyle iş süreçlerinizi dijitalleştiriyoruz.</p>
+            <a href="#iletisim" class="card-link" aria-label="Kurumsal yazılım hakkında detay al">Detay Al →</a>
+          </article>
+
+          <article class="card" aria-labelledby="card2-title">
+            <div class="card-icon" aria-hidden="true">📱</div>
+            <h3 id="card2-title">Mobil Uygulama</h3>
+            <p>iOS ve Android platformları için native ve cross-platform uygulama geliştirme.</p>
+            <a href="#iletisim" class="card-link" aria-label="Mobil uygulama hakkında detay al">Detay Al →</a>
+          </article>
+
+          <article class="card" aria-labelledby="card3-title">
+            <div class="card-icon" aria-hidden="true">☁️</div>
+            <h3 id="card3-title">Bulut Çözümleri</h3>
+            <p>AWS, Azure ve Google Cloud üzerinde ölçeklenebilir altyapı tasarımı ve yönetimi.</p>
+            <a href="#iletisim" class="card-link" aria-label="Bulut çözümleri hakkında detay al">Detay Al →</a>
+          </article>
+
+          <article class="card" aria-labelledby="card4-title">
+            <div class="card-icon" aria-hidden="true">🔒</div>
+            <h3 id="card4-title">Siber Güvenlik</h3>
+            <p>Penetrasyon testi, güvenlik denetimleri ve SOC hizmetleriyle sistemlerinizi koruyoruz.</p>
+            <a href="#iletisim" class="card-link" aria-label="Siber güvenlik hakkında detay al">Detay Al →</a>
+          </article>
+
+          <article class="card" aria-labelledby="card5-title">
+            <div class="card-icon" aria-hidden="true">📊</div>
+            <h3 id="card5-title">Veri Analitiği</h3>
+            <p>BI araçları ve AI destekli analitik platformlarla verilerinizden değer üretiyoruz.</p>
+            <a href="#iletisim" class="card-link" aria-label="Veri analitiği hakkında detay al">Detay Al →</a>
+          </article>
+
+          <article class="card" aria-labelledby="card6-title">
+            <div class="card-icon" aria-hidden="true">🤝</div>
+            <h3 id="card6-title">IT Danışmanlık</h3>
+            <p>Teknoloji stratejisi, dijital dönüşüm yol haritası ve proje yönetimi danışmanlığı.</p>
+            <a href="#iletisim" class="card-link" aria-label="IT danışmanlık hakkında detay al">Detay Al →</a>
+          </article>
+        </div>
+
+        <!-- ===== WCAG İHLALİ 1: Düşük kontrastlı metin ===== -->
+        <p class="low-contrast-text">* Tüm fiyatlar KDV hariçtir. Ayrıntılar için satış ekibimizle iletişime geçin.</p>
+
+        <!-- ===== WCAG İHLALİ 2: Tıklanabilir div (button değil) ===== -->
+        <div class="clickable-div" onclick="alert('Katalog indiriliyor...')">
+          📄 Hizmet Kataloğunu İndir
+        </div>
+      </div>
+    </section>
+
+    <!-- NASIL ÇALIŞIR -->
+    <section id="nasil-calisir" class="how" aria-labelledby="how-heading">
+      <div class="container">
+        <h2 id="how-heading" class="section-title">Nasıl Çalışır?</h2>
+        <p class="section-subtitle">4 adımda projenizi hayata geçiriyoruz</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num" aria-hidden="true">1</div>
+            <div>
+              <h3>Keşif ve Analiz</h3>
+              <p>İhtiyaçlarınızı detaylıca dinliyoruz, mevcut sistemlerinizi analiz ediyoruz ve kapsamlı bir fizibilite raporu hazırlıyoruz.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">2</div>
+            <div>
+              <h3>Tasarım ve Prototip</h3>
+              <p>UX/UI ekibimiz wireframe ve interaktif prototipler hazırlayarak görsel yönü netleştiriyor, onayınıza sunuyor.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">3</div>
+            <div>
+              <h3>Geliştirme ve Test</h3>
+              <p>Agile metodoloji ile sprint döngülerinde geliştirme yapıyoruz. Her sprint sonunda demo ve geri bildirim toplantısı yapıyoruz.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">4</div>
+            <div>
+              <h3>Canlıya Alma ve Destek</h3>
+              <p>Projeyi canlıya alıyor, ekibinizi eğitiyor ve 7/24 teknik destek sağlıyoruz.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAKETLER TABLOSU -->
+    <section id="paketler" class="pricing" aria-labelledby="pricing-heading">
+      <div class="container">
+        <h2 id="pricing-heading" class="section-title">Paket Karşılaştırması</h2>
+        <p class="section-subtitle">İşletmenizin boyutuna uygun paketi seçin</p>
+
+        <div class="table-wrapper">
+          <table aria-describedby="table-desc">
+            <caption>Teknova hizmet paketleri ve fiyat karşılaştırması</caption>
+            <thead>
+              <tr>
+                <th scope="col">Paket</th>
+                <th scope="col">Kullanıcı Sayısı</th>
+                <th scope="col">Aylık Ücret</th>
+                <th scope="col">Destek</th>
+                <th scope="col">Durum</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Başlangıç</th>
+                <td>1 – 10 kullanıcı</td>
+                <td>₺2.990 / ay</td>
+                <td>E-posta (iş günleri)</td>
+                <td><span class="badge badge-green">Mevcut</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Profesyonel</th>
+                <td>11 – 50 kullanıcı</td>
+                <td>₺7.990 / ay</td>
+                <td>Telefon + E-posta</td>
+                <td><span class="badge badge-green">Mevcut</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Kurumsal</th>
+                <td>51 – 200 kullanıcı</td>
+                <td>₺19.990 / ay</td>
+                <td>7/24 Öncelikli</td>
+                <td><span class="badge badge-orange">Sınırlı</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Enterprise</th>
+                <td>200+ kullanıcı</td>
+                <td>Teklif bazlı</td>
+                <td>Dedicated SLA</td>
+                <td><span class="badge badge-red">Tükenmek Üzere</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <p id="table-desc" style="margin-top:0.75rem; font-size:0.85rem; color:#555;">
+            Tüm paketler 30 günlük ücretsiz deneme içerir. Fiyatlar KDV hariçtir.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERİ -->
+    <section id="galeri" class="gallery" aria-labelledby="gallery-heading">
+      <div class="container">
+        <h2 id="gallery-heading" class="section-title">Proje Galerimiz</h2>
+        <p class="section-subtitle">Tamamladığımız projelerden görüntüler</p>
+
+        <div class="gallery-grid">
+          <!-- Erişilebilir: alt attribute var -->
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%23004E89' width='400' height='300'/%3E%3Ctext fill='%23fff' font-family='Arial' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EBankacılık Sistemi%3C/text%3E%3C/svg%3E"
+            alt="Özel geliştirdiğimiz bankacılık yönetim sistemi arayüzü"
+            width="400" height="160"
+          />
+          <!-- Erişilebilir: alt attribute var -->
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%231A659E' width='400' height='300'/%3E%3Ctext fill='%23fff' font-family='Arial' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ELojistik Platformu%3C/text%3E%3C/svg%3E"
+            alt="Lojistik firması için geliştirilen araç takip ve rota optimizasyon platformu"
+            width="400" height="160"
+          />
+          <!-- ===== WCAG İHLALİ 3: alt attribute eksik ===== -->
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%23FF6B35' width='400' height='300'/%3E%3Ctext fill='%23fff' font-family='Arial' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EE-Ticaret%3C/text%3E%3C/svg%3E"
+            width="400" height="160"
+          />
+          <!-- Erişilebilir -->
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%23343a40' width='400' height='300'/%3E%3Ctext fill='%23fff' font-family='Arial' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ESağlık Sistemi%3C/text%3E%3C/svg%3E"
+            alt="Hastane bilgi yönetim sistemi - hasta kayıt ve randevu modülü"
+            width="400" height="160"
+          />
+        </div>
+
+        <!-- ===== WCAG İHLALİ 4: Başlık hiyerarşisi atlaması h2 → h5 ===== -->
+        <h5 style="margin-top:1.5rem; color:#555; font-size:0.9rem;">
+          Daha fazla proje için portfolyo sayfamızı ziyaret edin.
+        </h5>
+      </div>
+    </section>
+
+    <!-- İLETİŞİM FORMU -->
+    <section id="iletisim" class="contact" aria-labelledby="contact-heading">
+      <div class="container">
+        <h2 id="contact-heading" class="section-title">Bize Ulaşın</h2>
+        <p class="section-subtitle">Projenizi konuşmak için formu doldurun, 24 saat içinde dönelim.</p>
+
+        <form id="contact-form" novalidate aria-describedby="form-note" style="max-width:800px;">
+          <div id="form-success" class="form-success" role="status" aria-live="polite">
+            Mesajınız başarıyla iletildi. En kısa sürede sizinle iletişime geçeceğiz.
+          </div>
+
+          <div class="form-grid">
+            <!-- Ad Soyad -->
+            <div class="form-group">
+              <label for="fullname">Ad Soyad <span class="required" aria-label="zorunlu alan">*</span></label>
+              <input
+                type="text" id="fullname" name="fullname"
+                autocomplete="name" required
+                aria-required="true"
+                aria-describedby="fullname-error"
+                placeholder="Örn: Ahmet Yılmaz"
+              />
+              <span id="fullname-error" class="field-error" role="alert">Ad soyad alanı zorunludur.</span>
+            </div>
+
+            <!-- E-posta -->
+            <div class="form-group">
+              <label for="email">E-posta Adresi <span class="required" aria-label="zorunlu alan">*</span></label>
+              <input
+                type="email" id="email" name="email"
+                autocomplete="email" required
+                aria-required="true"
+                aria-describedby="email-error"
+                placeholder="ornek@sirket.com"
+              />
+              <span id="email-error" class="field-error" role="alert">Geçerli bir e-posta adresi giriniz.</span>
+            </div>
+
+            <!-- Telefon -->
+            <div class="form-group">
+              <label for="phone">Telefon</label>
+              <input
+                type="tel" id="phone" name="phone"
+                autocomplete="tel"
+                placeholder="+90 (___) ___ __ __"
+              />
+            </div>
+
+            <!-- Şirket -->
+            <div class="form-group">
+              <label for="company">Şirket Adı</label>
+              <input
+                type="text" id="company" name="company"
+                autocomplete="organization"
+                placeholder="Şirket adınız"
+              />
+            </div>
+
+            <!-- Hizmet Seçimi -->
+            <div class="form-group full">
+              <label for="service">İlgilendiğiniz Hizmet <span class="required" aria-label="zorunlu alan">*</span></label>
+              <select id="service" name="service" required aria-required="true" aria-describedby="service-error">
+                <option value="">-- Seçiniz --</option>
+                <option value="kurumsal">Kurumsal Yazılım</option>
+                <option value="mobil">Mobil Uygulama</option>
+                <option value="bulut">Bulut Çözümleri</option>
+                <option value="guvenlik">Siber Güvenlik</option>
+                <option value="analitik">Veri Analitiği</option>
+                <option value="danismanlik">IT Danışmanlık</option>
+                <option value="diger">Diğer</option>
+              </select>
+              <span id="service-error" class="field-error" role="alert">Lütfen bir hizmet seçiniz.</span>
+            </div>
+
+            <!-- Mesaj -->
+            <div class="form-group full">
+              <label for="message">Mesajınız <span class="required" aria-label="zorunlu alan">*</span></label>
+              <textarea
+                id="message" name="message" required
+                aria-required="true"
+                aria-describedby="message-error"
+                placeholder="Projeniz hakkında kısaca bilgi verin..."
+              ></textarea>
+              <span id="message-error" class="field-error" role="alert">Mesaj alanı zorunludur.</span>
+            </div>
+
+            <!-- KVKK -->
+            <div class="form-group full">
+              <div class="form-check">
+                <input type="checkbox" id="kvkk" name="kvkk" required aria-required="true" aria-describedby="kvkk-error" />
+                <label for="kvkk">
+                  <a href="#" aria-label="Kişisel Verilerin Korunması Kanunu aydınlatma metnini oku (yeni sekmede açılır)" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum ve kabul ediyorum. <span class="required" aria-label="zorunlu alan">*</span>
+                </label>
+              </div>
+              <span id="kvkk-error" class="field-error" role="alert">KVKK metnini onaylamanız gerekmektedir.</span>
+            </div>
+
+            <!-- ===== WCAG İHLALİ 5: Label'sız input ===== -->
+            <div class="form-group" style="display:none;">
+              <!-- Honeypot - bot koruması (dekoratif, gizli) -->
+              <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">Gönder</button>
+              <button type="reset" style="
+                background: none; border: 2px solid #ccd5e0; color: #555;
+                padding: 0.85rem 1.5rem; border-radius: 6px; cursor: pointer;
+                font-size: 1rem; font-family: inherit;
+              ">Temizle</button>
+            </div>
+          </div>
+
+          <p id="form-note" style="margin-top:1rem; font-size:0.85rem; color:#666;">
+            <span class="required" aria-label="zorunlu">*</span> ile işaretli alanlar zorunludur.
+          </p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- REFERANSLAR -->
+  <section class="refs" aria-labelledby="refs-heading">
+    <div class="container">
+      <h2 id="refs-heading" style="color:#fff; text-align:center; margin-bottom:2rem; font-size:1.5rem;">
+        Güvenilir Markalar Teknova'yı Tercih Ediyor
+      </h2>
+      <div class="refs-grid" role="list">
+        <div class="ref-logo" role="listitem">AnadoluBank</div>
+        <div class="ref-logo" role="listitem">TechPazar</div>
+        <div class="ref-logo" role="listitem">BursaLojistik</div>
+        <div class="ref-logo" role="listitem">MedKlinik</div>
+        <div class="ref-logo" role="listitem">EduSmart</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Teknova Yazılım</h4>
+        <p style="font-size:0.9rem; line-height:1.7;">
+          2009'dan beri Türkiye'nin önde gelen yazılım ve teknoloji hizmetleri şirketi. ISO 27001 sertifikalı, KVKK uyumlu.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Hizmetler</h4>
+        <ul>
+          <li><a href="#hizmetler">Kurumsal Yazılım</a></li>
+          <li><a href="#hizmetler">Mobil Uygulama</a></li>
+          <li><a href="#hizmetler">Bulut Çözümleri</a></li>
+          <li><a href="#hizmetler">Siber Güvenlik</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kurumsal</h4>
+        <ul>
+          <li><a href="#">Hakkımızda</a></li>
+          <li><a href="#">Kariyer</a></li>
+          <li><a href="#">Basın Odası</a></li>
+          <li><a href="#">Sertifikalar</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>İletişim</h4>
+        <address style="font-style:normal; font-size:0.9rem; line-height:1.9; color:#9fb3c8;">
+          <div>Levent, İstanbul</div>
+          <div><a href="tel:+902121234567" style="color:#9fb3c8;">+90 (212) 123 45 67</a></div>
+          <div><a href="mailto:info@teknova.com.tr" style="color:#9fb3c8;">info@teknova.com.tr</a></div>
+        </address>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Teknova Yazılım A.Ş. Tüm hakları saklıdır.</p>
+      <p>
+        <a href="#">Gizlilik Politikası</a> &nbsp;|&nbsp;
+        <a href="#">KVKK</a> &nbsp;|&nbsp;
+        <a href="#">Çerez Politikası</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // ===== MOBİL MENÜ =====
+    const toggle = document.querySelector('.menu-toggle');
+    const navList = document.getElementById('main-nav');
+
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      navList.classList.toggle('open', !isOpen);
+    });
+
+    // ESC ile menüyü kapat
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && navList.classList.contains('open')) {
+        navList.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+      }
+    });
+
+    // ===== FORM VALİDASYON =====
+    const form = document.getElementById('contact-form');
+
+    function validate(field) {
+      const errorEl = document.getElementById(field.id + '-error');
+      if (!errorEl) return true;
+
+      let valid = true;
+      if (field.required && !field.value.trim()) valid = false;
+      if (field.type === 'email' && field.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) valid = false;
+      if (field.type === 'checkbox' && field.required && !field.checked) valid = false;
+
+      field.setAttribute('aria-invalid', String(!valid));
+      errorEl.classList.toggle('visible', !valid);
+      return valid;
+    }
+
+    // Gerçek zamanlı doğrulama
+    form.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('blur', () => validate(field));
+      field.addEventListener('input', () => {
+        if (field.getAttribute('aria-invalid') === 'true') validate(field);
+      });
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const fields = form.querySelectorAll('input[required], select[required], textarea[required]');
+      let allValid = true;
+      let firstInvalid = null;
+
+      fields.forEach(field => {
+        if (!validate(field)) {
+          allValid = false;
+          if (!firstInvalid) firstInvalid = field;
+        }
+      });
+
+      if (!allValid) {
+        firstInvalid.focus();
+        return;
+      }
+
+      const successEl = document.getElementById('form-success');
+      successEl.classList.add('visible');
+      form.reset();
+      successEl.focus();
+    });
+
+    // ===== WCAGTR DEMO WIDGET =====
+    (function () {
+      const API_BASE = 'http://localhost:3000/api/v1';
+      const BACKEND_WIDGET = 'http://localhost:3000/cdn/widget.js';
+      const LOCAL_WIDGET = window.location.origin + '/widget.js';
+      const STORAGE_KEY = 'wcagtr_testsite_demo_v1';
+
+      const dot = document.getElementById('demo-dot');
+      const msg = document.getElementById('demo-msg');
+      const bar = document.getElementById('wcagtr-demo-bar');
+
+      // Demo çubuğu kapat
+      document.getElementById('demo-close').addEventListener('click', () => {
+        bar.style.display = 'none';
+        document.body.classList.remove('has-demo-bar');
+      });
+      document.body.classList.add('has-demo-bar');
+
+      function setStatus(state, text) {
+        dot.className = 'demo-dot ' + state;
+        msg.textContent = text;
+      }
+
+      // lvh.me yönlendirmesi — localhost üzerinde token domain doğrulaması çalışmaz
+      const host = window.location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1') {
+        const port = window.location.port || '9090';
+        setStatus('loading', 'Demo için lvh.me\'ye yönlendiriliyor…');
+        setTimeout(() => {
+          window.location.replace('http://lvh.me:' + port + window.location.pathname);
+        }, 800);
+        return;
+      }
+
+      // Demo hesabını localStorage'dan al veya oluştur
+      function getOrCreateAccount() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+          if (saved?.email && saved?.password) return saved;
+        } catch (_) { localStorage.removeItem(STORAGE_KEY); }
+
+        const uid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        const account = {
+          email:       'demo@' + uid + '.testsite.local',
+          password:    'DemoPass123!',
+          companyName: 'Teknova Test Site',
+          contactName: 'Demo Kullanıcı',
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(account));
+        return account;
+      }
+
+      async function fetchJSON(url, opts) {
+        const res  = await fetch(url, opts);
+        const data = await res.json();
+        return { ok: res.ok, status: res.status, data };
+      }
+
+      function toBase64Url(raw) {
+        return btoa(raw).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+      }
+
+      function createLocalDemoToken(domain) {
+        const now = Math.floor(Date.now() / 1000);
+        const header = toBase64Url(JSON.stringify({ alg: 'none', typ: 'JWT' }));
+        const payload = toBase64Url(JSON.stringify({
+          domain,
+          exp: now + (60 * 60 * 24 * 30),
+          features: { accessibilityWidget: true },
+        }));
+        return `${header}.${payload}.local-demo-signature`;
+      }
+
+      // Login dene, başarısız olursa kayıt ol
+      async function getAuthToken(account) {
+        let r = await fetchJSON(API_BASE + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: account.email, password: account.password }),
+        });
+        if (r.ok && r.data?.token) return r.data.token;
+
+        r = await fetchJSON(API_BASE + '/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(account),
+        });
+        if (r.ok && r.data?.token) return r.data.token;
+
+        throw new Error(r.data?.error || 'Demo hesabı oluşturulamadı');
+      }
+
+      // Domain için widget token al; varsa tekrar kullan
+      async function getWidgetToken(authToken) {
+        const domain = window.location.hostname;
+
+        // Önce mevcut tokenları listele
+        const list = await fetchJSON(API_BASE + '/tokens', {
+          headers: { Authorization: 'Bearer ' + authToken },
+        });
+        if (list.ok) {
+          const existing = (list.data?.tokens || []).find(
+            t => t.domain === domain && t.is_active
+          );
+          const tok = existing?.token || existing?.widget_token;
+          if (tok) return tok;
+        }
+
+        // Yeni token oluştur
+        const created = await fetchJSON(API_BASE + '/tokens', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + authToken,
+          },
+          body: JSON.stringify({ domain, autoFixEnabled: true }),
+        });
+        const tok = created.data?.domain?.token || created.data?.token;
+        if (!tok) throw new Error('Token yanıtı beklenen formatta değil');
+        return tok;
+      }
+
+      // Widget script'i sayfaya ekle
+      function loadWidget({ widgetToken, scriptSrc, mode, apiBase, readyText }) {
+        const prev = document.getElementById('wcagtr-widget-script');
+        if (prev) prev.remove();
+
+        const s = document.createElement('script');
+        s.id   = 'wcagtr-widget-script';
+        s.src  = scriptSrc;
+        s.async = true;
+        s.setAttribute('data-token',   widgetToken);
+        s.setAttribute('data-mode',    mode);
+        s.setAttribute('data-fix-mode','client');
+        if (apiBase) s.setAttribute('data-api-base', apiBase);
+        s.setAttribute('data-allow-insecure-token-validation', 'true');
+
+        s.onload = () => setStatus('ok', readyText);
+        s.onerror = () => setStatus('err', 'Widget scripti yüklenemedi.');
+
+        document.body.appendChild(s);
+      }
+
+      async function init() {
+        try {
+          setStatus('loading', 'Backend kontrol ediliyor…');
+          const health = await fetchJSON('http://localhost:3000/health', {});
+          if (!health.ok) throw new Error('Backend yanıt vermiyor');
+
+          setStatus('loading', 'Demo hesabı hazırlanıyor…');
+          const account   = getOrCreateAccount();
+          const authToken = await getAuthToken(account);
+
+          setStatus('loading', 'Widget token alınıyor…');
+          const widgetToken = await getWidgetToken(authToken);
+
+          setStatus('loading', 'Widget yükleniyor…');
+          loadWidget({
+            widgetToken,
+            scriptSrc: BACKEND_WIDGET,
+            mode: 'auto',
+            apiBase: API_BASE,
+            readyText: 'Widget aktif — sol altta ♿ butonunu görebilirsiniz.',
+          });
+        } catch (err) {
+          try {
+            setStatus('loading', 'Backend erişilemedi, local demo modu açılıyor…');
+            const widgetToken = createLocalDemoToken(window.location.hostname);
+            loadWidget({
+              widgetToken,
+              scriptSrc: LOCAL_WIDGET,
+              mode: 'manual',
+              apiBase: '',
+              readyText: 'Widget aktif (local demo) — sol altta ♿ butonunu görebilirsiniz.',
+            });
+          } catch (fallbackErr) {
+            setStatus('err', 'Hata: ' + (fallbackErr.message || err.message));
+          }
+        }
+      }
+
+      init();
+    })();
+  </script>
+
+</body>
+</html>
